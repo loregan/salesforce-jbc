@@ -25,7 +25,7 @@
     </script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-        body { font-family: 'Inter', sans-serif; background-color: #F4F6F9; color: #1e293b; }
+        body { font-family: 'Inter', sans-serif; background-color: #032D60; color: #1e293b; }
         .glass-card { background: rgba(255, 255, 255, 0.95); border: 1px solid rgba(226, 232, 240, 0.8); box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); }
         .gradient-text { background: linear-gradient(to right, #00A1E0, #032D60); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         
@@ -36,387 +36,469 @@
         ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
     </style>
 </head>
-<body class="antialiased flex h-screen overflow-hidden">
+<body class="antialiased h-screen overflow-hidden">
 
-    <!-- Sidebar Navigation -->
-    <aside class="w-72 bg-sfNavy text-white flex flex-col h-full shadow-xl z-20 hidden md:flex shrink-0">
-        <div class="p-6 flex items-center gap-3 border-b border-white/10">
-            <div class="bg-white p-2 rounded shrink-0">
-                <i class="fas fa-cloud text-sfBlue text-xl"></i>
-            </div>
-            <span class="font-bold text-lg tracking-tight leading-tight">JBC Controls <br><span class="text-sm font-normal text-sfBlue">Solution Blueprint</span></span>
+    <!-- Access Code Gateway -->
+    <div id="login-screen" class="absolute inset-0 z-50 flex flex-col items-center justify-center bg-sfNavy text-white px-4">
+        <!-- Background decorative elements -->
+        <div class="absolute inset-0 overflow-hidden pointer-events-none opacity-10">
+            <i class="fas fa-cloud absolute top-10 left-10 text-9xl"></i>
+            <i class="fas fa-project-diagram absolute bottom-10 right-10 text-9xl"></i>
         </div>
         
-        <nav class="flex-1 overflow-y-auto px-4 py-6 space-y-1 text-sm font-medium">
-            <div class="text-xs font-semibold text-white/50 uppercase tracking-wider mb-3 px-3">Strategy & Context</div>
-            <a href="#sec-1" class="block py-2.5 px-3 rounded-lg hover:bg-white/10 text-white/80 hover:text-white transition"><i class="fas fa-file-alt w-6 opacity-70"></i> 1. Executive Summary</a>
-            <a href="#sec-2" class="block py-2.5 px-3 rounded-lg hover:bg-white/10 text-white/80 hover:text-white transition"><i class="fas fa-users w-6 opacity-70"></i> 2. Customer Context</a>
-            <a href="#sec-3" class="block py-2.5 px-3 rounded-lg hover:bg-white/10 text-white/80 hover:text-white transition"><i class="fas fa-exclamation-triangle w-6 opacity-70"></i> 3. Key Challenges</a>
-            
-            <div class="text-xs font-semibold text-white/50 uppercase tracking-wider mb-3 mt-6 px-3">Solution Design</div>
-            <a href="#sec-4" class="block py-2.5 px-3 rounded-lg hover:bg-white/10 text-white/80 hover:text-white transition"><i class="fas fa-project-diagram w-6 opacity-70"></i> 4. Solution Overview</a>
-            <a href="#sec-5" class="block py-2.5 px-3 rounded-lg hover:bg-white/10 text-white/80 hover:text-white transition"><i class="fas fa-layer-group w-6 opacity-70"></i> 5. Solution Deep Dive</a>
-            <a href="#sec-6" class="block py-2.5 px-3 rounded-lg hover:bg-white/10 text-white/80 hover:text-white transition"><i class="fas fa-file-pdf w-6 opacity-70"></i> 6. FS Datasheet</a>
-            
-            <div class="text-xs font-semibold text-white/50 uppercase tracking-wider mb-3 mt-6 px-3">Execution & Value</div>
-            <a href="#sec-7" class="block py-2.5 px-3 rounded-lg hover:bg-white/10 text-white/80 hover:text-white transition"><i class="fas fa-desktop w-6 opacity-70"></i> 7. Demo Highlights</a>
-            <a href="#sec-8" class="block py-2.5 px-3 rounded-lg hover:bg-white/10 text-white/80 hover:text-white transition"><i class="fas fa-chart-line w-6 opacity-70"></i> 8. Business Outcomes</a>
-        </nav>
-        
-        <div class="p-5 border-t border-white/10 bg-black/20">
-            <div class="text-xs text-white/60 mb-1">Target Demo Date</div>
-            <div class="font-bold text-emerald-400 flex items-center gap-2">
-                <i class="fas fa-calendar-check"></i> April 15, 2026 (PM)
+        <div class="bg-white/10 backdrop-blur-md p-8 md:p-10 rounded-2xl border border-white/20 shadow-2xl max-w-md w-full text-center relative z-10">
+            <div class="w-16 h-16 bg-sfBlue text-white rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg">
+                <i class="fas fa-lock text-3xl"></i>
             </div>
-            <div class="text-xs text-amber-400 mt-2">
-                <i class="fas fa-exclamation-circle"></i> Renewal Notice: End of May
+            <h2 class="text-2xl md:text-3xl font-bold mb-2 tracking-tight">Confidential Canvas</h2>
+            <p class="text-sm text-white/70 mb-8">Please enter your access code to view the JBC Controls Solution Blueprint.</p>
+            
+            <div class="space-y-4">
+                <input type="password" id="access-code" class="w-full bg-black/20 border border-white/20 rounded-lg px-4 py-4 text-white placeholder-white/50 focus:outline-none focus:border-sfBlue text-center tracking-widest text-lg font-mono transition" placeholder="•••••" autocomplete="off">
+                <p id="error-msg" class="text-red-400 text-xs font-semibold hidden text-left px-1"><i class="fas fa-exclamation-circle mr-1"></i> Incorrect access code.</p>
+                <button id="submit-btn" class="w-full bg-sfBlue hover:bg-blue-600 text-white font-bold py-4 px-4 rounded-lg transition shadow-lg uppercase tracking-wide text-sm flex justify-center items-center gap-2">
+                    Access Blueprint <i class="fas fa-arrow-right"></i>
+                </button>
+            </div>
+            
+            <div class="mt-8 pt-6 border-t border-white/10 text-xs text-white/40">
+                Prepared by Salesforce Solution Engineering
             </div>
         </div>
-    </aside>
+    </div>
 
-    <!-- Main Content -->
-    <main class="flex-1 overflow-y-auto h-full scroll-smooth bg-slate-50 relative">
-        
-        <!-- Header -->
-        <header class="bg-white border-b border-slate-200 sticky top-0 z-10 px-8 py-5 shadow-sm flex justify-between items-center">
-            <div>
-                <h1 class="text-2xl font-bold text-slate-800">JBC Controls Transformation Canvas</h1>
-                <p class="text-sm text-slate-500 font-medium">Consolidating EWorks & Salesforce into a Single Enterprise Platform</p>
-            </div>
-            <div class="hidden md:flex gap-3">
-                <span class="px-4 py-1.5 bg-blue-50 text-sfBlue border border-blue-200 rounded-full text-xs font-bold uppercase tracking-wide">CONFIDENTIAL - INTERNAL</span>
-            </div>
-        </header>
-
-        <div class="p-8 max-w-5xl mx-auto space-y-12 pb-24">
-
-            <!-- 1. Executive Summary -->
-            <section id="sec-1" class="bg-white rounded-2xl p-8 border border-slate-200 shadow-sm relative overflow-hidden">
-                <div class="absolute top-0 left-0 w-2 h-full bg-sfBlue"></div>
-                <h2 class="text-2xl font-bold mb-6 flex items-center gap-3 text-slate-800">
-                    <span class="text-sfBlue opacity-50"><i class="fas fa-file-alt"></i></span> 1. Executive Summary
-                </h2>
-                <div class="prose max-w-none text-slate-600">
-                    <p class="text-lg leading-relaxed mb-4">
-                        JBC Controls operates a sophisticated business model handling multi-month projects, scheduled maintenance (PPM), and reactive call-outs. Currently, their operations suffer from a <strong>"Digital Handoff Gap."</strong> While Sales, Purchasing, and Project Management efficiently utilize a custom-built Salesforce environment, Field Execution and Scheduling rely on EWorks—a siloed system implemented by previous management.
-                    </p>
-                    <p class="text-lg leading-relaxed mb-6">
-                        This separation creates manual duplication (e.g., Project Managers emailing Emma to create jobs in EWorks), obscures long-term scheduling visibility, and disconnects field findings from remedial sales opportunities. JBC is seeking a unified platform to consolidate costs and streamline operations. 
-                    </p>
-                    <div class="bg-slate-50 border border-slate-200 p-5 rounded-xl flex gap-4 items-start">
-                        <div class="bg-amber-100 text-amber-600 p-3 rounded-lg shrink-0"><i class="fas fa-hourglass-half fa-lg"></i></div>
-                        <div>
-                            <h4 class="font-bold text-slate-800 text-sm uppercase tracking-wide mb-1">The Commercial Imperative</h4>
-                            <p class="text-sm text-slate-600">
-                                Adam Axford (Projects Director) is driving this evaluation. JBC's current Salesforce contract has a renewal deadline at the <strong>end of June 2026</strong>, requiring formal notice by <strong>May 2026</strong>. Moving from Professional to <strong>Enterprise Edition</strong> (required for Field Service) must present a compelling TCO (Total Cost of Ownership) that justifies dropping the EWorks licenses.
-                            </p>
-                        </div>
-                    </div>
+    <!-- Main Application Container (Hidden Initially) -->
+    <div id="main-app" class="hidden h-full w-full">
+        <!-- Sidebar Navigation -->
+        <aside class="w-72 bg-sfNavy text-white flex flex-col h-full shadow-xl z-20 hidden md:flex shrink-0">
+            <div class="p-6 flex items-center gap-3 border-b border-white/10">
+                <div class="bg-white p-2 rounded shrink-0">
+                    <i class="fas fa-cloud text-sfBlue text-xl"></i>
                 </div>
-            </section>
-
-            <!-- 2. Customer Context -->
-            <section id="sec-2" class="scroll-mt-20">
-                <h2 class="text-2xl font-bold mb-6 flex items-center gap-3 text-slate-800">
-                    <span class="text-sfBlue opacity-50"><i class="fas fa-users"></i></span> 2. Customer Context
-                </h2>
+                <span class="font-bold text-lg tracking-tight leading-tight">JBC Controls <br><span class="text-sm font-normal text-sfBlue">Solution Blueprint</span></span>
+            </div>
+            
+            <nav class="flex-1 overflow-y-auto px-4 py-6 space-y-1 text-sm font-medium">
+                <div class="text-xs font-semibold text-white/50 uppercase tracking-wider mb-3 px-3">Strategy & Context</div>
+                <a href="#sec-1" class="block py-2.5 px-3 rounded-lg hover:bg-white/10 text-white/80 hover:text-white transition"><i class="fas fa-file-alt w-6 opacity-70"></i> 1. Executive Summary</a>
+                <a href="#sec-2" class="block py-2.5 px-3 rounded-lg hover:bg-white/10 text-white/80 hover:text-white transition"><i class="fas fa-users w-6 opacity-70"></i> 2. Customer Context</a>
+                <a href="#sec-3" class="block py-2.5 px-3 rounded-lg hover:bg-white/10 text-white/80 hover:text-white transition"><i class="fas fa-exclamation-triangle w-6 opacity-70"></i> 3. Key Challenges</a>
                 
-                <div class="grid md:grid-cols-4 gap-4 mb-6">
-                    <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm text-center">
-                        <div class="text-3xl font-bold text-sfNavy mb-1">25</div>
-                        <div class="text-xs uppercase font-bold text-slate-500">Total Users</div>
-                    </div>
-                    <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm text-center">
-                        <div class="text-3xl font-bold text-sfBlue mb-1">15</div>
-                        <div class="text-xs uppercase font-bold text-slate-500">Tech Licenses</div>
-                        <div class="text-[10px] text-slate-400 mt-1">(13 Field, 1 Bureau, 1 Ext)</div>
-                    </div>
-                    <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm text-center">
-                        <div class="text-3xl font-bold text-amber-500 mb-1">3</div>
-                        <div class="text-xs uppercase font-bold text-slate-500">Super Admins</div>
-                    </div>
-                    <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm text-center">
-                        <div class="text-3xl font-bold text-emerald-600 mb-1">1</div>
-                        <div class="text-xs uppercase font-bold text-slate-500">Partner</div>
-                        <div class="text-[10px] text-slate-400 mt-1">(Vanguard Cloud)</div>
-                    </div>
+                <div class="text-xs font-semibold text-white/50 uppercase tracking-wider mb-3 mt-6 px-3">Solution Design</div>
+                <a href="#sec-4" class="block py-2.5 px-3 rounded-lg hover:bg-white/10 text-white/80 hover:text-white transition"><i class="fas fa-project-diagram w-6 opacity-70"></i> 4. Solution Overview</a>
+                <a href="#sec-5" class="block py-2.5 px-3 rounded-lg hover:bg-white/10 text-white/80 hover:text-white transition"><i class="fas fa-layer-group w-6 opacity-70"></i> 5. Solution Deep Dive</a>
+                <a href="#sec-6" class="block py-2.5 px-3 rounded-lg hover:bg-white/10 text-white/80 hover:text-white transition"><i class="fas fa-file-pdf w-6 opacity-70"></i> 6. FS Datasheet</a>
+                
+                <div class="text-xs font-semibold text-white/50 uppercase tracking-wider mb-3 mt-6 px-3">Execution & Value</div>
+                <a href="#sec-7" class="block py-2.5 px-3 rounded-lg hover:bg-white/10 text-white/80 hover:text-white transition"><i class="fas fa-desktop w-6 opacity-70"></i> 7. Demo Highlights</a>
+                <a href="#sec-8" class="block py-2.5 px-3 rounded-lg hover:bg-white/10 text-white/80 hover:text-white transition"><i class="fas fa-chart-line w-6 opacity-70"></i> 8. Business Outcomes</a>
+            </nav>
+            
+            <div class="p-5 border-t border-white/10 bg-black/20">
+                <div class="text-xs text-white/60 mb-1">Target Demo Date</div>
+                <div class="font-bold text-emerald-400 flex items-center gap-2">
+                    <i class="fas fa-calendar-check"></i> April 15, 2026 (PM)
                 </div>
-
-                <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm mb-6">
-                    <h3 class="font-bold text-slate-800 border-b border-slate-100 pb-3 mb-4">Key Stakeholders & Personas</h3>
-                    <div class="grid md:grid-cols-2 gap-6">
-                        <div class="flex gap-4 items-start">
-                            <div class="w-10 h-10 rounded-full bg-blue-50 border border-blue-100 flex items-center justify-center text-sfBlue shrink-0"><i class="fas fa-user-tie"></i></div>
-                            <div>
-                                <div class="font-bold text-sm text-slate-800">Adam Axford <span class="font-normal text-slate-500">| Projects Director</span></div>
-                                <div class="text-xs text-slate-600 mt-1">Built current SF project tracking. Deep SF advocate. Highly focused on cost consolidation and proving ROI for the Enterprise upgrade.</div>
-                            </div>
-                        </div>
-                        <div class="flex gap-4 items-start">
-                            <div class="w-10 h-10 rounded-full bg-emerald-50 border border-emerald-100 flex items-center justify-center text-emerald-600 shrink-0"><i class="fas fa-clipboard-list"></i></div>
-                            <div>
-                                <div class="font-bold text-sm text-slate-800">Keith Miller <span class="font-normal text-slate-500">| Service & Ops Manager</span></div>
-                                <div class="text-xs text-slate-600 mt-1">New to business. Needs a "15-minute live" Daily Status Dashboard. Wants to grade engineers by skill (Levels 1, 2, 3) for targeted dispatch.</div>
-                            </div>
-                        </div>
-                        <div class="flex gap-4 items-start">
-                            <div class="w-10 h-10 rounded-full bg-indigo-50 border border-indigo-100 flex items-center justify-center text-indigo-600 shrink-0"><i class="fas fa-headset"></i></div>
-                            <div>
-                                <div class="font-bold text-sm text-slate-800">Emma <span class="font-normal text-slate-500">| Service Coordinator</span></div>
-                                <div class="text-xs text-slate-600 mt-1">The pivotal scheduling user. Heavily relies on EWorks "Time Planner". Needs visual control to manage the "human element" of assigning bespoke jobs.</div>
-                            </div>
-                        </div>
-                        <div class="flex gap-4 items-start">
-                            <div class="w-10 h-10 rounded-full bg-purple-50 border border-purple-100 flex items-center justify-center text-purple-600 shrink-0"><i class="fas fa-chart-pie"></i></div>
-                            <div>
-                                <div class="font-bold text-sm text-slate-800">Megan <span class="font-normal text-slate-500">| Sales</span></div>
-                                <div class="text-xs text-slate-600 mt-1">Sells maintenance contracts in SF. Currently, these contracts don't automatically notify Emma to schedule PPMs.</div>
-                            </div>
-                        </div>
-                    </div>
+                <div class="text-xs text-amber-400 mt-2">
+                    <i class="fas fa-exclamation-circle"></i> Renewal Notice: End of May
                 </div>
-            </section>
+            </div>
+        </aside>
 
-            <!-- 3. Key Challenges -->
-            <section id="sec-3" class="scroll-mt-20">
-                <h2 class="text-2xl font-bold mb-6 flex items-center gap-3 text-slate-800">
-                    <span class="text-sfBlue opacity-50"><i class="fas fa-exclamation-triangle"></i></span> 3. Key Challenges
-                </h2>
-                <div class="grid md:grid-cols-3 gap-6">
-                    <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm border-t-4 border-t-red-500">
-                        <div class="text-red-500 mb-4"><i class="fas fa-envelope-open-text fa-2x"></i></div>
-                        <h3 class="font-bold text-slate-800 mb-2">The Email Handoff Gap</h3>
-                        <p class="text-sm text-slate-600">Currently, a Project Manager hits a button in SF, which sends an email to Emma. Emma must manually re-key that data into EWorks to create an appointment. Contract renewals suffer the same manual disconnect.</p>
-                    </div>
-                    <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm border-t-4 border-t-amber-500">
-                        <div class="text-amber-500 mb-4"><i class="fas fa-calendar-times fa-2x"></i></div>
-                        <h3 class="font-bold text-slate-800 mb-2">Poor Long-Term Scheduling</h3>
-                        <p class="text-sm text-slate-600">While Emma uses the weekly Time Planner in EWorks, the Month View is described as "pointless—just a number in a box." JBC loses critical visibility when planning complex commissioning projects months in advance.</p>
-                    </div>
-                    <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm border-t-4 border-t-sfBlue">
-                        <div class="text-sfBlue mb-4"><i class="fas fa-file-pdf fa-2x"></i></div>
-                        <h3 class="font-bold text-slate-800 mb-2">Static "Drawn-On" Forms</h3>
-                        <p class="text-sm text-slate-600">Technicians fill out RAMS and Health Checks via EWorks, but the forms are literally "PDFs with boxes drawn over them." This static data traps valuable findings—meaning faulty sensors don't automatically trigger remedial sales quotes.</p>
-                    </div>
+        <!-- Main Content -->
+        <main class="flex-1 overflow-y-auto h-full scroll-smooth bg-slate-50 relative">
+            
+            <!-- Header -->
+            <header class="bg-white border-b border-slate-200 sticky top-0 z-10 px-8 py-5 shadow-sm flex justify-between items-center">
+                <div>
+                    <h1 class="text-2xl font-bold text-slate-800">JBC Controls Transformation Canvas</h1>
+                    <p class="text-sm text-slate-500 font-medium">Consolidating EWorks & Salesforce into a Single Enterprise Platform</p>
                 </div>
-            </section>
+                <div class="hidden md:flex gap-3">
+                    <span class="px-4 py-1.5 bg-blue-50 text-sfBlue border border-blue-200 rounded-full text-xs font-bold uppercase tracking-wide">CONFIDENTIAL - INTERNAL</span>
+                </div>
+            </header>
 
-            <!-- 4. Solution Overview -->
-            <section id="sec-4" class="scroll-mt-20">
-                <div class="bg-sfNavy text-white rounded-2xl p-8 shadow-lg relative overflow-hidden">
-                    <!-- Background pattern -->
-                    <div class="absolute top-0 right-0 opacity-10 pointer-events-none">
-                        <i class="fas fa-project-diagram" style="font-size: 250px; transform: translate(20%, -20%);"></i>
-                    </div>
-                    
-                    <h2 class="text-2xl font-bold mb-6 flex items-center gap-3">
-                        <span class="text-white/50"><i class="fas fa-project-diagram"></i></span> 4. Proposed Solution Overview
+            <div class="p-8 max-w-5xl mx-auto space-y-12 pb-24">
+
+                <!-- 1. Executive Summary -->
+                <section id="sec-1" class="bg-white rounded-2xl p-8 border border-slate-200 shadow-sm relative overflow-hidden">
+                    <div class="absolute top-0 left-0 w-2 h-full bg-sfBlue"></div>
+                    <h2 class="text-2xl font-bold mb-6 flex items-center gap-3 text-slate-800">
+                        <span class="text-sfBlue opacity-50"><i class="fas fa-file-alt"></i></span> 1. Executive Summary
                     </h2>
-                    <div class="flex flex-col md:flex-row gap-8 items-center relative z-10">
-                        <div class="flex-1 space-y-4">
-                            <p class="text-lg text-white/90">We propose upgrading JBC’s 25 users to <strong>Salesforce Enterprise Edition</strong> and deploying <strong>Salesforce Field Service (SFS)</strong> to act as the unified execution engine.</p>
-                            <p class="text-sm text-white/80 mb-4">By leveraging Vanguard Cloud Consulting for implementation, JBC can seamlessly transition away from EWorks before the summer renewal.</p>
-                            <ul class="space-y-3">
-                                <li class="flex items-start gap-3"><i class="fas fa-check-circle text-emerald-400 mt-1"></i> <span class="text-sm"><strong>Unified Architecture:</strong> Work Orders are generated automatically and layered directly underneath Adam's existing SF Project records.</span></li>
-                                <li class="flex items-start gap-3"><i class="fas fa-check-circle text-emerald-400 mt-1"></i> <span class="text-sm"><strong>Empowered Dispatch:</strong> A robust Calendar/Gantt allows Emma to manually assign the right tech based on skills (Tier 1/2/3) and "Preferred Resource" history.</span></li>
-                                <li class="flex items-start gap-3"><i class="fas fa-check-circle text-emerald-400 mt-1"></i> <span class="text-sm"><strong>Data-Driven Forms:</strong> Dynamic RAMS and Health Checks executed offline via the SFS Mobile App.</span></li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- 5. Solution Deep Dive -->
-            <section id="sec-5" class="scroll-mt-20">
-                <h2 class="text-2xl font-bold mb-6 flex items-center gap-3 text-slate-800">
-                    <span class="text-sfBlue opacity-50"><i class="fas fa-layer-group"></i></span> 5. Solution Deep Dive
-                </h2>
-                <div class="grid md:grid-cols-2 gap-6">
-                    <!-- Dispatcher -->
-                    <div class="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm flex flex-col">
-                        <div class="bg-slate-50 px-6 py-4 border-b border-slate-200 flex items-center gap-3">
-                            <i class="fas fa-calendar-alt text-indigo-500 text-xl"></i>
-                            <h3 class="font-bold text-slate-800">Field Service Console (For Emma)</h3>
-                        </div>
-                        <div class="p-6 flex-1">
-                            <ul class="space-y-4 text-sm text-slate-600">
-                                <li><strong class="text-slate-800 block mb-1">Calendar-Based Diary View:</strong> Replacing the EWorks Time Planner with a dynamic Gantt chart. Emma can see 15 diaries at once, spot multi-week gaps, and view the long-term horizon missing from EWorks.</li>
-                                <li><strong class="text-slate-800 block mb-1">Preserving the "Human Element":</strong> JBC jobs are bespoke (1-2 a day). Instead of fully automated routing, Emma retains drag-and-drop control, assisted by logic that flags Tier 1/2/3 engineer skills and site familiarity.</li>
-                            </ul>
-                        </div>
-                    </div>
-                    
-                    <!-- Mobile -->
-                    <div class="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm flex flex-col">
-                        <div class="bg-slate-50 px-6 py-4 border-b border-slate-200 flex items-center gap-3">
-                            <i class="fas fa-mobile-alt text-emerald-500 text-xl"></i>
-                            <h3 class="font-bold text-slate-800">Mobile Execution & Compliance</h3>
-                        </div>
-                        <div class="p-6 flex-1">
-                            <ul class="space-y-4 text-sm text-slate-600">
-                                <li><strong class="text-slate-800 block mb-1">Dynamic RAMS (ISO Requirement):</strong> Before starting a job, techs must complete digital Risk Assessments via the SFS App, capturing customer signatures on the glass.</li>
-                                <li><strong class="text-slate-800 block mb-1">Knowledge Base Access:</strong> Moving data sheets and "toolbox talks" out of Teams directly onto the Work Order for instant field access.</li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    <!-- Platform Automation -->
-                    <div class="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm md:col-span-2">
-                        <div class="bg-slate-50 px-6 py-4 border-b border-slate-200 flex items-center gap-3">
-                            <i class="fas fa-cogs text-sfBlue text-xl"></i>
-                            <h3 class="font-bold text-slate-800">Enterprise Automation & Reporting</h3>
-                        </div>
-                        <div class="p-6 grid md:grid-cols-2 gap-6">
+                    <div class="prose max-w-none text-slate-600">
+                        <p class="text-lg leading-relaxed mb-4">
+                            JBC Controls operates a sophisticated business model handling multi-month projects, scheduled maintenance (PPM), and reactive call-outs. Currently, their operations suffer from a <strong>"Digital Handoff Gap."</strong> While Sales, Purchasing, and Project Management efficiently utilize a custom-built Salesforce environment, Field Execution and Scheduling rely on EWorks—a siloed system implemented by previous management.
+                        </p>
+                        <p class="text-lg leading-relaxed mb-6">
+                            This separation creates manual duplication (e.g., Project Managers emailing Emma to create jobs in EWorks), obscures long-term scheduling visibility, and disconnects field findings from remedial sales opportunities. JBC is seeking a unified platform to consolidate costs and streamline operations. 
+                        </p>
+                        <div class="bg-slate-50 border border-slate-200 p-5 rounded-xl flex gap-4 items-start">
+                            <div class="bg-amber-100 text-amber-600 p-3 rounded-lg shrink-0"><i class="fas fa-hourglass-half fa-lg"></i></div>
                             <div>
-                                <h4 class="font-bold text-slate-800 text-sm mb-2">Automated Remedial Quoting</h4>
-                                <p class="text-sm text-slate-600">Replacing static PDFs means we can use logic. If a tech submits a Health Check flagging a "Faulty Sensor", Flow automatically alerts the Service Sales team to issue a remedial quote.</p>
-                            </div>
-                            <div>
-                                <h4 class="font-bold text-slate-800 text-sm mb-2">Keith's Daily Status Dashboard</h4>
-                                <p class="text-sm text-slate-600">A live, 15-minute refresh dashboard giving Keith complete operational visibility: technicians arrived safely on-site, tickets opened, and jobs closed.</p>
+                                <h4 class="font-bold text-slate-800 text-sm uppercase tracking-wide mb-1">The Commercial Imperative</h4>
+                                <p class="text-sm text-slate-600">
+                                    Adam Axford (Projects Director) is driving this evaluation. JBC's current Salesforce contract has a renewal deadline at the <strong>end of June 2026</strong>, requiring formal notice by <strong>May 2026</strong>. Moving from Professional to <strong>Enterprise Edition</strong> (required for Field Service) must present a compelling TCO (Total Cost of Ownership) that justifies dropping the EWorks licenses.
+                                </p>
                             </div>
                         </div>
                     </div>
-                </div>
-            </section>
+                </section>
 
-            <!-- 6. Field Service Datasheet -->
-            <section id="sec-6" class="scroll-mt-20">
-                <h2 class="text-2xl font-bold mb-6 flex items-center gap-3 text-slate-800">
-                    <span class="text-sfBlue opacity-50"><i class="fas fa-file-pdf"></i></span> 6. Field Service Datasheet & Licensing
-                </h2>
-                <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-6 lg:p-8">
-                    <p class="text-slate-600 mb-6">
-                        To help Adam Axford and the JBC team evaluate the TCO of consolidating onto Salesforce, we have provided an overview of the Field Service licensing options. Upgrading to Enterprise Edition is a prerequisite, after which the appropriate Field Service licenses can be applied based on user roles.
-                    </p>
+                <!-- 2. Customer Context -->
+                <section id="sec-2" class="scroll-mt-20">
+                    <h2 class="text-2xl font-bold mb-6 flex items-center gap-3 text-slate-800">
+                        <span class="text-sfBlue opacity-50"><i class="fas fa-users"></i></span> 2. Customer Context
+                    </h2>
                     
-                    <div class="grid md:grid-cols-3 gap-6 mb-8">
-                        <!-- License Type 1 -->
-                        <div class="bg-blue-50 border border-blue-100 p-5 rounded-xl shadow-sm">
-                            <h4 class="font-bold text-sfNavy flex items-center gap-2 mb-3"><i class="fas fa-tools text-sfBlue"></i> Mobile License</h4>
-                            <p class="text-sm text-slate-600">For the 13 field engineers and external techs. Includes offline capabilities, dynamic RAMS, digital Health Checks, and step-by-step mobile flows.</p>
+                    <div class="grid md:grid-cols-4 gap-4 mb-6">
+                        <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm text-center">
+                            <div class="text-3xl font-bold text-sfNavy mb-1">25</div>
+                            <div class="text-xs uppercase font-bold text-slate-500">Total Users</div>
+                        </div>
+                        <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm text-center">
+                            <div class="text-3xl font-bold text-sfBlue mb-1">15</div>
+                            <div class="text-xs uppercase font-bold text-slate-500">Tech Licenses</div>
+                            <div class="text-[10px] text-slate-400 mt-1">(13 Field, 1 Bureau, 1 Ext)</div>
+                        </div>
+                        <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm text-center">
+                            <div class="text-3xl font-bold text-amber-500 mb-1">3</div>
+                            <div class="text-xs uppercase font-bold text-slate-500">Super Admins</div>
+                        </div>
+                        <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm text-center">
+                            <div class="text-3xl font-bold text-emerald-600 mb-1">1</div>
+                            <div class="text-xs uppercase font-bold text-slate-500">Partner</div>
+                            <div class="text-[10px] text-slate-400 mt-1">(Vanguard Cloud)</div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm mb-6">
+                        <h3 class="font-bold text-slate-800 border-b border-slate-100 pb-3 mb-4">Key Stakeholders & Personas</h3>
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div class="flex gap-4 items-start">
+                                <div class="w-10 h-10 rounded-full bg-blue-50 border border-blue-100 flex items-center justify-center text-sfBlue shrink-0"><i class="fas fa-user-tie"></i></div>
+                                <div>
+                                    <div class="font-bold text-sm text-slate-800">Adam Axford <span class="font-normal text-slate-500">| Projects Director</span></div>
+                                    <div class="text-xs text-slate-600 mt-1">Built current SF project tracking. Deep SF advocate. Highly focused on cost consolidation and proving ROI for the Enterprise upgrade.</div>
+                                </div>
+                            </div>
+                            <div class="flex gap-4 items-start">
+                                <div class="w-10 h-10 rounded-full bg-emerald-50 border border-emerald-100 flex items-center justify-center text-emerald-600 shrink-0"><i class="fas fa-clipboard-list"></i></div>
+                                <div>
+                                    <div class="font-bold text-sm text-slate-800">Keith Miller <span class="font-normal text-slate-500">| Service & Ops Manager</span></div>
+                                    <div class="text-xs text-slate-600 mt-1">New to business. Needs a "15-minute live" Daily Status Dashboard. Wants to grade engineers by skill (Levels 1, 2, 3) for targeted dispatch.</div>
+                                </div>
+                            </div>
+                            <div class="flex gap-4 items-start">
+                                <div class="w-10 h-10 rounded-full bg-indigo-50 border border-indigo-100 flex items-center justify-center text-indigo-600 shrink-0"><i class="fas fa-headset"></i></div>
+                                <div>
+                                    <div class="font-bold text-sm text-slate-800">Emma <span class="font-normal text-slate-500">| Service Coordinator</span></div>
+                                    <div class="text-xs text-slate-600 mt-1">The pivotal scheduling user. Heavily relies on EWorks "Time Planner". Needs visual control to manage the "human element" of assigning bespoke jobs.</div>
+                                </div>
+                            </div>
+                            <div class="flex gap-4 items-start">
+                                <div class="w-10 h-10 rounded-full bg-purple-50 border border-purple-100 flex items-center justify-center text-purple-600 shrink-0"><i class="fas fa-chart-pie"></i></div>
+                                <div>
+                                    <div class="font-bold text-sm text-slate-800">Megan <span class="font-normal text-slate-500">| Sales</span></div>
+                                    <div class="text-xs text-slate-600 mt-1">Sells maintenance contracts in SF. Currently, these contracts don't automatically notify Emma to schedule PPMs.</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 3. Key Challenges -->
+                <section id="sec-3" class="scroll-mt-20">
+                    <h2 class="text-2xl font-bold mb-6 flex items-center gap-3 text-slate-800">
+                        <span class="text-sfBlue opacity-50"><i class="fas fa-exclamation-triangle"></i></span> 3. Key Challenges
+                    </h2>
+                    <div class="grid md:grid-cols-3 gap-6">
+                        <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm border-t-4 border-t-red-500">
+                            <div class="text-red-500 mb-4"><i class="fas fa-envelope-open-text fa-2x"></i></div>
+                            <h3 class="font-bold text-slate-800 mb-2">The Email Handoff Gap</h3>
+                            <p class="text-sm text-slate-600">Currently, a Project Manager hits a button in SF, which sends an email to Emma. Emma must manually re-key that data into EWorks to create an appointment. Contract renewals suffer the same manual disconnect.</p>
+                        </div>
+                        <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm border-t-4 border-t-amber-500">
+                            <div class="text-amber-500 mb-4"><i class="fas fa-calendar-times fa-2x"></i></div>
+                            <h3 class="font-bold text-slate-800 mb-2">Poor Long-Term Scheduling</h3>
+                            <p class="text-sm text-slate-600">While Emma uses the weekly Time Planner in EWorks, the Month View is described as "pointless—just a number in a box." JBC loses critical visibility when planning complex commissioning projects months in advance.</p>
+                        </div>
+                        <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm border-t-4 border-t-sfBlue">
+                            <div class="text-sfBlue mb-4"><i class="fas fa-file-pdf fa-2x"></i></div>
+                            <h3 class="font-bold text-slate-800 mb-2">Static "Drawn-On" Forms</h3>
+                            <p class="text-sm text-slate-600">Technicians fill out RAMS and Health Checks via EWorks, but the forms are literally "PDFs with boxes drawn over them." This static data traps valuable findings—meaning faulty sensors don't automatically trigger remedial sales quotes.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 4. Solution Overview -->
+                <section id="sec-4" class="scroll-mt-20">
+                    <div class="bg-sfNavy text-white rounded-2xl p-8 shadow-lg relative overflow-hidden">
+                        <!-- Background pattern -->
+                        <div class="absolute top-0 right-0 opacity-10 pointer-events-none">
+                            <i class="fas fa-project-diagram" style="font-size: 250px; transform: translate(20%, -20%);"></i>
                         </div>
                         
-                        <!-- License Type 2 -->
-                        <div class="bg-indigo-50 border border-indigo-100 p-5 rounded-xl shadow-sm">
-                            <h4 class="font-bold text-sfNavy flex items-center gap-2 mb-3"><i class="fas fa-calendar-alt text-indigo-500"></i> Dispatcher License</h4>
-                            <p class="text-sm text-slate-600">For Emma and coordinators. Unlocks the full Gantt chart, calendar diary view, skill-based routing (Tier 1/2/3), and advanced resource optimization.</p>
-                        </div>
-
-                        <!-- License Type 3 -->
-                        <div class="bg-emerald-50 border border-emerald-100 p-5 rounded-xl shadow-sm">
-                            <h4 class="font-bold text-sfNavy flex items-center gap-2 mb-3"><i class="fas fa-headset text-emerald-500"></i> Agent License</h4>
-                            <p class="text-sm text-slate-600">For customer service and intake agents to create work orders, book appointments, and handle initial project handoffs before dispatch.</p>
-                        </div>
-                    </div>
-
-                    <div class="border-t border-slate-100 pt-6 flex justify-center md:justify-start">
-                        <a href="https://www.salesforce.com/content/dam/web/en_us/www/documents/datasheets/field-service-datasheet.pdf" target="_blank" class="inline-flex items-center gap-2 bg-sfBlue hover:bg-blue-600 text-white font-semibold py-3 px-6 rounded-lg transition shadow-md">
-                            <i class="fas fa-external-link-alt"></i> View Full Field Service Datasheet
-                        </a>
-                    </div>
-                </div>
-            </section>
-
-            <!-- 7. Demo Highlights -->
-            <section id="sec-7" class="scroll-mt-20">
-                <!-- Video Highlight Section -->
-                <div class="mb-10 bg-slate-900 rounded-2xl overflow-hidden shadow-lg border border-slate-800 relative">
-                    <div class="p-5 bg-slate-800 border-b border-slate-700 flex justify-between items-center">
-                         <h3 class="font-bold text-white flex items-center gap-2"><i class="fas fa-play-circle text-sfBlue text-xl"></i> Out-of-the-Box Capabilities</h3>
-                         <span class="text-xs font-semibold bg-slate-700 text-slate-300 px-3 py-1 rounded-full uppercase tracking-wide">Vidyard Preview</span>
-                    </div>
-                    <div class="aspect-video w-full bg-black relative">
-                        <!-- Vidyard Embed -->
-                        <iframe src="https://play.vidyard.com/tDAsu9dxRupGkY5p4btMqG" width="100%" height="100%" frameborder="0" scrolling="no" allowfullscreen allowtransparency allow="autoplay"></iframe>
-                    </div>
-                    <div class="p-4 bg-slate-800 text-sm text-slate-300">
-                        <p><i class="fas fa-info-circle text-sfBlue mr-1"></i> The video above highlights what is included out-of-the-box before bespoke customisations are applied for JBC Controls.</p>
-                    </div>
-                </div>
-
-                <div class="bg-white rounded-2xl p-8 border border-slate-200 shadow-sm">
-                    <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-8 gap-4 border-b border-slate-100 pb-6">
-                        <div>
-                            <h2 class="text-2xl font-bold flex items-center gap-3 text-slate-800 mb-2">
-                                <span class="text-sfBlue opacity-50"><i class="fas fa-desktop"></i></span> 7. Customized Demo Scope
-                            </h2>
-                            <p class="text-sm text-slate-600">Customized demonstration scenarios based on the JBC RAMS PDF template.</p>
-                        </div>
-                        <div class="bg-emerald-50 border border-emerald-100 p-3 rounded-lg text-right w-full md:w-auto">
-                            <div class="text-xs text-emerald-600 font-bold uppercase tracking-wide mb-1">Target Date</div>
-                            <div class="font-bold text-emerald-800">Wed, April 15th (PM)</div>
-                            <div class="text-[10px] text-emerald-600 mt-1">Accommodates Emma's return from holiday</div>
-                        </div>
-                    </div>
-                    
-                    <div class="grid md:grid-cols-2 gap-x-8 gap-y-6">
-                        <div class="flex gap-4">
-                            <div class="text-blue-500 mt-1"><i class="fas fa-layer-group fa-lg"></i></div>
-                            <div>
-                                <h4 class="font-bold text-sm text-slate-800">Project Layering</h4>
-                                <p class="text-xs text-slate-600 mt-1">Demonstrating how multiple Work Orders live underneath Adam's custom Project records.</p>
-                            </div>
-                        </div>
-                        <div class="flex gap-4">
-                            <div class="text-emerald-500 mt-1"><i class="fas fa-check-square fa-lg"></i></div>
-                            <div>
-                                <h4 class="font-bold text-sm text-slate-800">Digital RAMS execution</h4>
-                                <p class="text-xs text-slate-600 mt-1">Showcasing the SFS Mobile App replacing EWorks PDFs, forcing RAMS completion before work starts.</p>
-                            </div>
-                        </div>
-                        <div class="flex gap-4 col-span-1 md:col-span-2">
-                            <div class="text-amber-500 mt-1"><i class="fas fa-bolt fa-lg"></i></div>
-                            <div>
-                                <h4 class="font-bold text-sm text-slate-800">Remedial Quote Triggers</h4>
-                                <p class="text-xs text-slate-600 mt-1">Executing a flow that alerts Sales based on specific Health Check findings.</p>
+                        <h2 class="text-2xl font-bold mb-6 flex items-center gap-3">
+                            <span class="text-white/50"><i class="fas fa-project-diagram"></i></span> 4. Proposed Solution Overview
+                        </h2>
+                        <div class="flex flex-col md:flex-row gap-8 items-center relative z-10">
+                            <div class="flex-1 space-y-4">
+                                <p class="text-lg text-white/90">We propose upgrading JBC’s 25 users to <strong>Salesforce Enterprise Edition</strong> and deploying <strong>Salesforce Field Service (SFS)</strong> to act as the unified execution engine.</p>
+                                <p class="text-sm text-white/80 mb-4">By leveraging Vanguard Cloud Consulting for implementation, JBC can seamlessly transition away from EWorks before the summer renewal.</p>
+                                <ul class="space-y-3">
+                                    <li class="flex items-start gap-3"><i class="fas fa-check-circle text-emerald-400 mt-1"></i> <span class="text-sm"><strong>Unified Architecture:</strong> Work Orders are generated automatically and layered directly underneath Adam's existing SF Project records.</span></li>
+                                    <li class="flex items-start gap-3"><i class="fas fa-check-circle text-emerald-400 mt-1"></i> <span class="text-sm"><strong>Empowered Dispatch:</strong> A robust Calendar/Gantt allows Emma to manually assign the right tech based on skills (Tier 1/2/3) and "Preferred Resource" history.</span></li>
+                                    <li class="flex items-start gap-3"><i class="fas fa-check-circle text-emerald-400 mt-1"></i> <span class="text-sm"><strong>Data-Driven Forms:</strong> Dynamic RAMS and Health Checks executed offline via the SFS Mobile App.</span></li>
+                                </ul>
                             </div>
                         </div>
                     </div>
-                    
-                    <!-- Interactive Consensus Demo Embed -->
-                    <div class="mt-10 border border-slate-200 rounded-xl shadow-sm overflow-hidden relative group">
-                        <div class="bg-slate-50 p-4 border-b border-slate-200 flex flex-col md:flex-row justify-between md:items-center gap-3">
-                            <div>
-                                <h3 class="font-bold text-slate-800 flex items-center gap-2"><i class="fas fa-mouse-pointer text-indigo-500"></i> Interactive Dispatcher Demo</h3>
-                                <p class="text-xs text-slate-500 mt-1">Click through a simulated Dispatcher Console experience</p>
+                </section>
+
+                <!-- 5. Solution Deep Dive -->
+                <section id="sec-5" class="scroll-mt-20">
+                    <h2 class="text-2xl font-bold mb-6 flex items-center gap-3 text-slate-800">
+                        <span class="text-sfBlue opacity-50"><i class="fas fa-layer-group"></i></span> 5. Solution Deep Dive
+                    </h2>
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <!-- Dispatcher -->
+                        <div class="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm flex flex-col">
+                            <div class="bg-slate-50 px-6 py-4 border-b border-slate-200 flex items-center gap-3">
+                                <i class="fas fa-calendar-alt text-indigo-500 text-xl"></i>
+                                <h3 class="font-bold text-slate-800">Field Service Console (For Emma)</h3>
                             </div>
-                            <a href="http://play.goconsensus.com/9f0fa19b-26f6-4732-bac1-0400275c23dd?preview=sales" target="_blank" class="text-xs font-semibold bg-white text-indigo-600 px-3 py-1.5 rounded-full border border-indigo-200 hover:bg-indigo-50 transition inline-flex items-center gap-1 shrink-0"><i class="fas fa-external-link-alt"></i> Open in New Page</a>
+                            <div class="p-6 flex-1">
+                                <ul class="space-y-4 text-sm text-slate-600">
+                                    <li><strong class="text-slate-800 block mb-1">Calendar-Based Diary View:</strong> Replacing the EWorks Time Planner with a dynamic Gantt chart. Emma can see 15 diaries at once, spot multi-week gaps, and view the long-term horizon missing from EWorks.</li>
+                                    <li><strong class="text-slate-800 block mb-1">Preserving the "Human Element":</strong> JBC jobs are bespoke (1-2 a day). Instead of fully automated routing, Emma retains drag-and-drop control, assisted by logic that flags Tier 1/2/3 engineer skills and site familiarity.</li>
+                                </ul>
+                            </div>
                         </div>
                         
-                        <div class="h-[600px] w-full bg-slate-100 relative">
-                            <!-- Consensus Demo Embed -->
-                            <iframe src="http://play.goconsensus.com/9f0fa19b-26f6-4732-bac1-0400275c23dd?preview=sales" width="100%" height="100%" frameborder="0" class="absolute inset-0 w-full h-full" allowfullscreen></iframe>
+                        <!-- Mobile -->
+                        <div class="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm flex flex-col">
+                            <div class="bg-slate-50 px-6 py-4 border-b border-slate-200 flex items-center gap-3">
+                                <i class="fas fa-mobile-alt text-emerald-500 text-xl"></i>
+                                <h3 class="font-bold text-slate-800">Mobile Execution & Compliance</h3>
+                            </div>
+                            <div class="p-6 flex-1">
+                                <ul class="space-y-4 text-sm text-slate-600">
+                                    <li><strong class="text-slate-800 block mb-1">Dynamic RAMS (ISO Requirement):</strong> Before starting a job, techs must complete digital Risk Assessments via the SFS App, capturing customer signatures on the glass.</li>
+                                    <li><strong class="text-slate-800 block mb-1">Knowledge Base Access:</strong> Moving data sheets and "toolbox talks" out of Teams directly onto the Work Order for instant field access.</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- Platform Automation -->
+                        <div class="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm md:col-span-2">
+                            <div class="bg-slate-50 px-6 py-4 border-b border-slate-200 flex items-center gap-3">
+                                <i class="fas fa-cogs text-sfBlue text-xl"></i>
+                                <h3 class="font-bold text-slate-800">Enterprise Automation & Reporting</h3>
+                            </div>
+                            <div class="p-6 grid md:grid-cols-2 gap-6">
+                                <div>
+                                    <h4 class="font-bold text-slate-800 text-sm mb-2">Automated Remedial Quoting</h4>
+                                    <p class="text-sm text-slate-600">Replacing static PDFs means we can use logic. If a tech submits a Health Check flagging a "Faulty Sensor", Flow automatically alerts the Service Sales team to issue a remedial quote.</p>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-slate-800 text-sm mb-2">Keith's Daily Status Dashboard</h4>
+                                    <p class="text-sm text-slate-600">A live, 15-minute refresh dashboard giving Keith complete operational visibility: technicians arrived safely on-site, tickets opened, and jobs closed.</p>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </section>
+                </section>
 
-            <!-- 8. Value & Business Outcomes -->
-            <section id="sec-8" class="scroll-mt-20">
-                <h2 class="text-2xl font-bold mb-6 flex items-center gap-3 text-slate-800">
-                    <span class="text-sfBlue opacity-50"><i class="fas fa-chart-line"></i></span> 8. Value & Business Outcomes
-                </h2>
-                <div class="grid md:grid-cols-3 gap-6">
-                    <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
-                        <div class="w-12 h-12 bg-blue-50 text-sfBlue rounded-lg flex items-center justify-center text-xl mb-4"><i class="fas fa-piggy-bank"></i></div>
-                        <h4 class="font-bold text-slate-800 mb-2">TCO Consolidation</h4>
-                        <p class="text-sm text-slate-600">Eliminating the dual licensing costs of EWorks vs. Salesforce by unifying all 25 users onto a single Enterprise platform, satisfying Adam's primary financial requirement.</p>
-                    </div>
-                    <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
-                        <div class="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-lg flex items-center justify-center text-xl mb-4"><i class="fas fa-coins"></i></div>
-                        <h4 class="font-bold text-slate-800 mb-2">Remedial Revenue Capture</h4>
-                        <p class="text-sm text-slate-600">By turning static PDF Health Checks into dynamic Salesforce data, zero remedial sales opportunities fall through the cracks between the field and Megan's sales team.</p>
-                    </div>
-                    <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
-                        <div class="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-lg flex items-center justify-center text-xl mb-4"><i class="fas fa-tachometer-alt"></i></div>
-                        <h4 class="font-bold text-slate-800 mb-2">Operational Visibility</h4>
-                        <p class="text-sm text-slate-600">Delivering Keith's requested "Daily Status" live dashboard, and giving Emma the long-term Gantt chart visualization she currently lacks in EWorks.</p>
-                    </div>
-                </div>
-            </section>
+                <!-- 6. Field Service Datasheet -->
+                <section id="sec-6" class="scroll-mt-20">
+                    <h2 class="text-2xl font-bold mb-6 flex items-center gap-3 text-slate-800">
+                        <span class="text-sfBlue opacity-50"><i class="fas fa-file-pdf"></i></span> 6. Field Service Datasheet & Licensing
+                    </h2>
+                    <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-6 lg:p-8">
+                        <p class="text-slate-600 mb-6">
+                            To help Adam Axford and the JBC team evaluate the TCO of consolidating onto Salesforce, we have provided an overview of the Field Service licensing options. Upgrading to Enterprise Edition is a prerequisite, after which the appropriate Field Service licenses can be applied based on user roles.
+                        </p>
+                        
+                        <div class="grid md:grid-cols-3 gap-6 mb-8">
+                            <!-- License Type 1 -->
+                            <div class="bg-blue-50 border border-blue-100 p-5 rounded-xl shadow-sm">
+                                <h4 class="font-bold text-sfNavy flex items-center gap-2 mb-3"><i class="fas fa-tools text-sfBlue"></i> Mobile License</h4>
+                                <p class="text-sm text-slate-600">For the 13 field engineers and external techs. Includes offline capabilities, dynamic RAMS, digital Health Checks, and step-by-step mobile flows.</p>
+                            </div>
+                            
+                            <!-- License Type 2 -->
+                            <div class="bg-indigo-50 border border-indigo-100 p-5 rounded-xl shadow-sm">
+                                <h4 class="font-bold text-sfNavy flex items-center gap-2 mb-3"><i class="fas fa-calendar-alt text-indigo-500"></i> Dispatcher License</h4>
+                                <p class="text-sm text-slate-600">For Emma and coordinators. Unlocks the full Gantt chart, calendar diary view, skill-based routing (Tier 1/2/3), and advanced resource optimization.</p>
+                            </div>
 
-        </div>
-    </main>
+                            <!-- License Type 3 -->
+                            <div class="bg-emerald-50 border border-emerald-100 p-5 rounded-xl shadow-sm">
+                                <h4 class="font-bold text-sfNavy flex items-center gap-2 mb-3"><i class="fas fa-headset text-emerald-500"></i> Agent License</h4>
+                                <p class="text-sm text-slate-600">For customer service and intake agents to create work orders, book appointments, and handle initial project handoffs before dispatch.</p>
+                            </div>
+                        </div>
+
+                        <div class="border-t border-slate-100 pt-6 flex justify-center md:justify-start">
+                            <a href="https://www.salesforce.com/content/dam/web/en_us/www/documents/datasheets/field-service-datasheet.pdf" target="_blank" class="inline-flex items-center gap-2 bg-sfBlue hover:bg-blue-600 text-white font-semibold py-3 px-6 rounded-lg transition shadow-md">
+                                <i class="fas fa-external-link-alt"></i> View Full Field Service Datasheet
+                            </a>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 7. Demo Highlights -->
+                <section id="sec-7" class="scroll-mt-20">
+                    <!-- Video Highlight Section -->
+                    <div class="mb-10 bg-slate-900 rounded-2xl overflow-hidden shadow-lg border border-slate-800 relative">
+                        <div class="p-5 bg-slate-800 border-b border-slate-700 flex justify-between items-center">
+                             <h3 class="font-bold text-white flex items-center gap-2"><i class="fas fa-play-circle text-sfBlue text-xl"></i> Out-of-the-Box Capabilities</h3>
+                             <span class="text-xs font-semibold bg-slate-700 text-slate-300 px-3 py-1 rounded-full uppercase tracking-wide">Vidyard Preview</span>
+                        </div>
+                        <div class="aspect-video w-full bg-black relative">
+                            <!-- Vidyard Embed -->
+                            <iframe src="https://play.vidyard.com/tDAsu9dxRupGkY5p4btMqG" width="100%" height="100%" frameborder="0" scrolling="no" allowfullscreen allowtransparency allow="autoplay"></iframe>
+                        </div>
+                        <div class="p-4 bg-slate-800 text-sm text-slate-300">
+                            <p><i class="fas fa-info-circle text-sfBlue mr-1"></i> The video above highlights what is included out-of-the-box before bespoke customisations are applied for JBC Controls.</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-2xl p-8 border border-slate-200 shadow-sm">
+                        <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-8 gap-4 border-b border-slate-100 pb-6">
+                            <div>
+                                <h2 class="text-2xl font-bold flex items-center gap-3 text-slate-800 mb-2">
+                                    <span class="text-sfBlue opacity-50"><i class="fas fa-desktop"></i></span> 7. Customized Demo Scope
+                                </h2>
+                                <p class="text-sm text-slate-600">Customized demonstration scenarios based on the JBC RAMS PDF template.</p>
+                            </div>
+                            <div class="bg-emerald-50 border border-emerald-100 p-3 rounded-lg text-right w-full md:w-auto">
+                                <div class="text-xs text-emerald-600 font-bold uppercase tracking-wide mb-1">Target Date</div>
+                                <div class="font-bold text-emerald-800">Wed, April 15th (PM)</div>
+                                <div class="text-[10px] text-emerald-600 mt-1">Accommodates Emma's return from holiday</div>
+                            </div>
+                        </div>
+                        
+                        <div class="grid md:grid-cols-2 gap-x-8 gap-y-6">
+                            <div class="flex gap-4">
+                                <div class="text-blue-500 mt-1"><i class="fas fa-layer-group fa-lg"></i></div>
+                                <div>
+                                    <h4 class="font-bold text-sm text-slate-800">Project Layering</h4>
+                                    <p class="text-xs text-slate-600 mt-1">Demonstrating how multiple Work Orders live underneath Adam's custom Project records.</p>
+                                </div>
+                            </div>
+                            <div class="flex gap-4">
+                                <div class="text-emerald-500 mt-1"><i class="fas fa-check-square fa-lg"></i></div>
+                                <div>
+                                    <h4 class="font-bold text-sm text-slate-800">Digital RAMS execution</h4>
+                                    <p class="text-xs text-slate-600 mt-1">Showcasing the SFS Mobile App replacing EWorks PDFs, forcing RAMS completion before work starts.</p>
+                                </div>
+                            </div>
+                            <div class="flex gap-4 col-span-1 md:col-span-2">
+                                <div class="text-amber-500 mt-1"><i class="fas fa-bolt fa-lg"></i></div>
+                                <div>
+                                    <h4 class="font-bold text-sm text-slate-800">Remedial Quote Triggers</h4>
+                                    <p class="text-xs text-slate-600 mt-1">Executing a flow that alerts Sales based on specific Health Check findings.</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Interactive Consensus Demo Embed -->
+                        <div class="mt-10 border border-slate-200 rounded-xl shadow-sm overflow-hidden relative group">
+                            <div class="bg-slate-50 p-4 border-b border-slate-200 flex flex-col md:flex-row justify-between md:items-center gap-3">
+                                <div>
+                                    <h3 class="font-bold text-slate-800 flex items-center gap-2"><i class="fas fa-mouse-pointer text-indigo-500"></i> Interactive Dispatcher Demo</h3>
+                                    <p class="text-xs text-slate-500 mt-1">Click through a simulated Dispatcher Console experience</p>
+                                </div>
+                                <a href="http://play.goconsensus.com/9f0fa19b-26f6-4732-bac1-0400275c23dd?preview=sales" target="_blank" class="text-xs font-semibold bg-white text-indigo-600 px-3 py-1.5 rounded-full border border-indigo-200 hover:bg-indigo-50 transition inline-flex items-center gap-1 shrink-0"><i class="fas fa-external-link-alt"></i> Open in New Page</a>
+                            </div>
+                            
+                            <div class="h-[600px] w-full bg-slate-100 relative">
+                                <!-- Consensus Demo Embed -->
+                                <iframe src="http://play.goconsensus.com/9f0fa19b-26f6-4732-bac1-0400275c23dd?preview=sales" width="100%" height="100%" frameborder="0" class="absolute inset-0 w-full h-full" allowfullscreen></iframe>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 8. Value & Business Outcomes -->
+                <section id="sec-8" class="scroll-mt-20">
+                    <h2 class="text-2xl font-bold mb-6 flex items-center gap-3 text-slate-800">
+                        <span class="text-sfBlue opacity-50"><i class="fas fa-chart-line"></i></span> 8. Value & Business Outcomes
+                    </h2>
+                    <div class="grid md:grid-cols-3 gap-6">
+                        <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                            <div class="w-12 h-12 bg-blue-50 text-sfBlue rounded-lg flex items-center justify-center text-xl mb-4"><i class="fas fa-piggy-bank"></i></div>
+                            <h4 class="font-bold text-slate-800 mb-2">TCO Consolidation</h4>
+                            <p class="text-sm text-slate-600">Eliminating the dual licensing costs of EWorks vs. Salesforce by unifying all 25 users onto a single Enterprise platform, satisfying Adam's primary financial requirement.</p>
+                        </div>
+                        <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                            <div class="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-lg flex items-center justify-center text-xl mb-4"><i class="fas fa-coins"></i></div>
+                            <h4 class="font-bold text-slate-800 mb-2">Remedial Revenue Capture</h4>
+                            <p class="text-sm text-slate-600">By turning static PDF Health Checks into dynamic Salesforce data, zero remedial sales opportunities fall through the cracks between the field and Megan's sales team.</p>
+                        </div>
+                        <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                            <div class="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-lg flex items-center justify-center text-xl mb-4"><i class="fas fa-tachometer-alt"></i></div>
+                            <h4 class="font-bold text-slate-800 mb-2">Operational Visibility</h4>
+                            <p class="text-sm text-slate-600">Delivering Keith's requested "Daily Status" live dashboard, and giving Emma the long-term Gantt chart visualization she currently lacks in EWorks.</p>
+                        </div>
+                    </div>
+                </section>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- Access Code Logic -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const loginScreen = document.getElementById('login-screen');
+            const mainApp = document.getElementById('main-app');
+            const codeInput = document.getElementById('access-code');
+            const submitBtn = document.getElementById('submit-btn');
+            const errorMsg = document.getElementById('error-msg');
+
+            function checkAccess() {
+                const code = codeInput.value.trim().toLowerCase();
+                
+                // Check if code matches 'sfjbc'
+                if (code === 'sfjbc') {
+                    // Hide login screen
+                    loginScreen.classList.add('hidden');
+                    
+                    // Show main application
+                    mainApp.classList.remove('hidden');
+                    mainApp.classList.add('flex'); // Add flex context back to the layout
+                    
+                    // Remove initial dark background from body
+                    document.body.style.backgroundColor = '';
+                } else {
+                    // Show error state
+                    errorMsg.classList.remove('hidden');
+                    codeInput.classList.add('border-red-400');
+                    codeInput.classList.remove('border-white/20', 'focus:border-sfBlue');
+                }
+            }
+
+            // Click event for the button
+            submitBtn.addEventListener('click', checkAccess);
+            
+            // Enter key event for the input field
+            codeInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    checkAccess();
+                }
+            });
+            
+            // Clear error state when user starts typing again
+            codeInput.addEventListener('input', () => {
+                errorMsg.classList.add('hidden');
+                codeInput.classList.remove('border-red-400');
+                codeInput.classList.add('border-white/20', 'focus:border-sfBlue');
+            });
+        });
+    </script>
 </body>
 </html>
